@@ -18,6 +18,7 @@ module UIExplorer exposing
     , createCategories
     , logoFromHtml
     , logoFromUrl
+    , getStoryUrls
     )
 
 {-|
@@ -1176,6 +1177,24 @@ viewMobileOverlay isOpen =
         , onClick MobileMenuToggled
         ]
         []
+
+
+getStoryUrls : List (UICategory a b c) -> List String
+getStoryUrls categories =
+    categories
+        |> List.concatMap
+            (\(UICategoryType ( cat, uiList )) ->
+                uiList
+                    |> List.map
+                        (\(UIType { id, viewStories }) ->
+                            viewStories
+                                |> List.map
+                                    (\( storyName, _, _ ) ->
+                                        "#" ++ cat ++ "/" ++ id ++ "/" ++ storyName
+                                    )
+                        )
+            )
+        |> List.concat
 
 
 view : Config a b c d -> Model a b c -> Html (Msg b)
